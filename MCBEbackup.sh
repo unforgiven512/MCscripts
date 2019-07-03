@@ -31,13 +31,14 @@ server_read() {
 }
 
 case $1 in
---help|-h)
-	echo Back up Minecraft Bedrock Edition server world running in tmux session.
-	echo "$syntax"
-	echo 'Backups are ${server_dir}_Backups/${world}_Backups/$year/$month/${date}_$hour-$minute.zip in ~ or $backup_dir if applicable. $backup_dir is best on another drive.'
-	exit
+	--help|-h)
+		echo Back up Minecraft Bedrock Edition server world running in tmux session.
+		echo "$syntax"
+		echo 'Backups are ${server_dir}_Backups/${world}_Backups/$year/$month/${date}_$hour-$minute.zip in ~ or $backup_dir if applicable. $backup_dir is best on another drive.'
+		exit
 	;;
 esac
+
 if [ "$#" -lt 2 ]; then
 	>&2 echo Not enough arguments
 	>&2 echo "$syntax"
@@ -48,11 +49,15 @@ elif [ "$#" -gt 4 ]; then
 	exit 1
 fi
 
+
 server_dir=$(realpath "$1")
 properties=$server_dir/server.properties
 world=$(grep level-name "$properties" | cut -d = -f 2)
+
 # $properties says level-name=$world
 world_dir=$server_dir/worlds
+
+## Check that the directory containing the world ('level-name') exists
 if [ ! -d "$world_dir/$world" ]; then
 	>&2 echo "No world $world in $world_dir, check level-name in server.properties too"
 	exit 2
@@ -65,9 +70,15 @@ if [ -n "$3" ]; then
 else
 	backup_dir=~
 fi
+
+## Build directory structure for backup(s)
 backup_dir=$backup_dir/$(basename "$server_dir")_Backups/${world}_Backups/$year/$month
+
+
 mkdir -p "$backup_dir"
+
 # Make directory and parents quietly
+
 backup_zip=$backup_dir/${date}_$thyme.zip
 
 if [ -n "$4" ]; then
