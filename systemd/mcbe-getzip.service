@@ -2,11 +2,11 @@
 Description=Automatically download Minecraft Bedrock Edition server ZIP
 
 [Service]
-ExecStart=/bin/bash -c 'echo y | /opt/MC/MCBEgetZIP.sh'
+ExecStart=/bin/bash -c 'echo y | /opt/minecraft/MCBEgetZIP.sh'
 # MCBEgetZIP.sh may read y asking if you agree to the EULA
 KillMode=none
 Type=oneshot
-User=mc
+User=minecraft
 
 [Install]
 WantedBy=multi-user.target
